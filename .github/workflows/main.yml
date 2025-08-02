@@ -144,6 +144,7 @@ jobs:
 
   deploy-helm-dev:
     name: Deploy to Development
+    if: github.event_name == 'workflow_dispatch' && inputs.environment == 'dev'
     needs: [helm-ci, docker-ci]
     uses: ./.github/workflows/reusable-deployment.yml
     secrets: inherit
@@ -154,6 +155,7 @@ jobs:
 
   deploy-helm-stg:
     name: Deploy to Staging
+    if: github.event_name == 'workflow_dispatch' && inputs.environment == 'staging'
     needs: [deploy-helm-dev]
     uses: ./.github/workflows/reusable-deployment.yml
     secrets: inherit
@@ -162,3 +164,5 @@ jobs:
       version: ${{ github.sha }}
       helm-values-path: ./todoapp/values/stg.yaml
       helm-release-name: todoapp-staging
+      artifact: ${{ inputs.artifact }}
+
